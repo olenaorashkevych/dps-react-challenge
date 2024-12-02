@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { User } from './types/user';
+import { fetchUsers } from './actions/crm';
 
 const App: React.FC = () => {
+	const [users, setUsers] = useState<User[]>([]);
+	console.log('users: ', users);
+
+	// Fetch users once when the component is mounted
+	useEffect(() => {
+		const loadUsers = async () => {
+			const usersData = await fetchUsers();
+			setUsers(usersData); // Store fetched users
+		};
+		loadUsers();
+	}, []);
+
 	return (
 		<div className="app">
 			<div className="filters">
@@ -35,11 +49,15 @@ const App: React.FC = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>User name surname</td>
-						<td>Address city</td>
-						<td>30.5.1996</td>
-					</tr>
+					{users.map((user) => (
+						<tr key={user.id}>
+							<td>{`${user.firstName} ${user.lastName}`}</td>
+							<td>{user.address.city}</td>
+							<td>
+								{new Date(user.birthDate).toLocaleDateString()}
+							</td>
+						</tr>
+					))}
 				</tbody>
 			</table>
 		</div>

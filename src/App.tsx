@@ -63,14 +63,12 @@ const App: React.FC = () => {
 	return (
 		<div className="app">
 			<div className="filters">
-				{/* Name filter input */}
 				<label>
 					Name:
 					<input type="text" placeholder="Filter by name" value={nameFilter}
 						onChange={(e) => setNameFilter(e.target.value)} />
 				</label>
 
-				{/* City filter dropdown */}
 				<label>
 					City:
 					<select
@@ -86,7 +84,6 @@ const App: React.FC = () => {
 					</select>
 				</label>
 
-				{/* Highlight oldest checkbox */}
 				<label>
 					Highlight oldest:
 					<input
@@ -97,7 +94,6 @@ const App: React.FC = () => {
 				</label>
 			</div>
 
-			{/* Users table */}
 			<table className="user-table">
 				<thead>
 					<tr>

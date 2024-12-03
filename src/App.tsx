@@ -4,7 +4,10 @@ import { fetchUsers } from './actions/crm';
 
 const App: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
-	console.log('users: ', users);
+	const [nameFilter, setNameFilter] = useState('');
+	const [cityFilter, setCityFilter] = useState('');
+	const [highlightOldest, setHighlightOldest] = useState(false);
+
 
 	// Fetch users once when the component is mounted
 	useEffect(() => {
@@ -14,6 +17,11 @@ const App: React.FC = () => {
 		};
 		loadUsers();
 	}, []);
+
+	// Create a list of unique cities from user data
+	const cities = Array.from(
+		new Set(users.map((user) => user.address.city))
+	);
 
 	return (
 		<div className="app">
@@ -29,6 +37,11 @@ const App: React.FC = () => {
 					City:
 					<select>
 						<option value="">All Cities</option>
+						{cities.map((city, index) => (
+							<option key={index} value={city}>
+								{city}
+							</option>
+						))}
 					</select>
 				</label>
 

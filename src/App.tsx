@@ -26,8 +26,20 @@ const App: React.FC = () => {
 
 	// Memoize filtered users to optimize performance
 	const filteredUsers = useMemo(() => {
-		return users.filter((user) => !cityFilter || user.address.city === cityFilter);
-	}, [users, cityFilter]);
+		return users
+			.filter(
+				(user) => !cityFilter || user.address.city === cityFilter
+			)
+			.filter(
+				(user) =>
+					user.firstName
+						.toLowerCase()
+						.includes(nameFilter.toLowerCase()) ||
+					user.lastName
+						.toLowerCase()
+						.includes(nameFilter.toLowerCase())
+			)
+	}, [users, nameFilter, cityFilter]);
 
 
 
@@ -37,7 +49,8 @@ const App: React.FC = () => {
 				{/* Name filter input */}
 				<label>
 					Name:
-					<input type="text" placeholder="Filter by name" />
+					<input type="text" placeholder="Filter by name" value={nameFilter}
+						onChange={(e) => setNameFilter(e.target.value)} />
 				</label>
 
 				{/* City filter dropdown */}
@@ -73,15 +86,19 @@ const App: React.FC = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{filteredUsers.map((user) => (
-						<tr key={user.id}>
-							<td>{`${user.firstName} ${user.lastName}`}</td>
-							<td>{user.address.city}</td>
-							<td>
-								{new Date(user.birthDate).toLocaleDateString()}
-							</td>
-						</tr>
-					))}
+					{filteredUsers.length
+						?
+						filteredUsers.map((user) => (
+							<tr key={user.id}>
+								<td>{`${user.firstName} ${user.lastName}`}</td>
+								<td>{user.address.city}</td>
+								<td>
+									{new Date(user.birthDate).toLocaleDateString()}
+								</td>
+							</tr>
+						))
+						: <tr><td colSpan={3}>No results</td></tr>
+					}
 				</tbody>
 			</table>
 		</div>

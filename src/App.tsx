@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { User } from './types/user';
 import { fetchUsers } from './actions/crm';
-import { log } from 'console';
+
 
 const App: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);

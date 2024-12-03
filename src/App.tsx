@@ -41,7 +41,24 @@ const App: React.FC = () => {
 			)
 	}, [users, nameFilter, cityFilter]);
 
+	// Memoize the oldest user in each city
+	const oldestPerCity = useMemo(() => {
 
+		const oldest: Record<string, User> = {};
+
+		filteredUsers.forEach((user) => {
+
+			if (!oldest[user.address.city]) {
+
+				oldest[user.address.city] = user;
+			} else {
+				if (new Date(user.birthDate) < new Date(oldest[user.address.city].birthDate)) {
+					oldest[user.address.city] = user;
+				}
+			}
+		});
+		return oldest;
+	}, [filteredUsers]);
 
 	return (
 		<div className="app">
@@ -72,7 +89,11 @@ const App: React.FC = () => {
 				{/* Highlight oldest checkbox */}
 				<label>
 					Highlight oldest:
-					<input type="checkbox" />
+					<input
+						type="checkbox"
+						checked={highlightOldest}
+						onChange={() => setHighlightOldest(!highlightOldest)}
+					/>
 				</label>
 			</div>
 
@@ -89,7 +110,15 @@ const App: React.FC = () => {
 					{filteredUsers.length
 						?
 						filteredUsers.map((user) => (
-							<tr key={user.id}>
+							<tr
+								key={user.id}
+								style={{
+									backgroundColor:
+										highlightOldest && oldestPerCity[user.address.city]?.id === user.id
+											? 'lightyellow'
+											: 'transparent',
+								}}
+							>
 								<td>{`${user.firstName} ${user.lastName}`}</td>
 								<td>{user.address.city}</td>
 								<td>

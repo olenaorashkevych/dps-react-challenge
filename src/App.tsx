@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { User } from './types/user';
 import { fetchUsers } from './actions/crm';
+import { log } from 'console';
 
 const App: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
@@ -23,6 +24,13 @@ const App: React.FC = () => {
 		new Set(users.map((user) => user.address.city))
 	);
 
+	// Memoize filtered users to optimize performance
+	const filteredUsers = useMemo(() => {
+		return users.filter((user) => !cityFilter || user.address.city === cityFilter);
+	}, [users, cityFilter]);
+
+
+
 	return (
 		<div className="app">
 			<div className="filters">
@@ -35,7 +43,10 @@ const App: React.FC = () => {
 				{/* City filter dropdown */}
 				<label>
 					City:
-					<select>
+					<select
+						value={cityFilter}
+						onChange={(e) => setCityFilter(e.target.value)}
+					>
 						<option value="">All Cities</option>
 						{cities.map((city, index) => (
 							<option key={index} value={city}>
@@ -62,7 +73,7 @@ const App: React.FC = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{users.map((user) => (
+					{filteredUsers.map((user) => (
 						<tr key={user.id}>
 							<td>{`${user.firstName} ${user.lastName}`}</td>
 							<td>{user.address.city}</td>
